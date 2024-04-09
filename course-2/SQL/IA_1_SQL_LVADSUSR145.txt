@@ -1,0 +1,38 @@
+1)select customerId from customerinteractions where DataUsed>(Select avg(DataUsed) from customerinteractions) and month='March' and year=2024;
+
+2)select customerId from customerinteractions group by customerID having (select DataUsed from customerinteractions where month ='March')> (select DataUsed from customerinteractions where month ='February');
+
+3)NA
+
+LAB 2:
+
+4) Select sum(TotalSalesAmount) from quarterlysales where ProductTypeID=1 group by ProductTypeID;
+Select ProductTypeID,sum(TotalSalesAmount) from quarterlysales group by ProductTypeID;
+
+5) Select ProductTypeID,max(UnitsSold) from quarterlysales where Quarter='Q1' and Year=2024 group by ProductTypeID order by max(UnitsSold) desc limit 1;
+
+6) select avg(TotalSalesAmount) from quarterlysales where Quarter='Q2' and Year=2024 and ProductTypeID=1 group by ProductTypeID;
+
+SET 3:
+7)SELECT Region FROM sectorenergyconsumption WHERE Month='March' and Year=2024 AND EnergySource='Solar'|'Wind'
+and ConsumptionKWh>(select avg(ConsumptionKWh) from sectorenergyconsumption);
+
+8)NA
+
+9) select distinct(
+select sum(ConsumptionKWh) from sectorenergyconsumption where EnergySource='Fossil Fuels'and MONTH='February' and Year=2024),(
+select sum(ConsumptionKWh) from sectorenergyconsumption where EnergySource<>'Fossil Fuels'and MONTH='February' and Year=2024) 
+from sectorenergyconsumption  ;
+
+LAB 4:
+
+10) Select CustomerName from insuranceactivities
+ where ( FeedbackScore>(select avg(FeedbackScore) from insuranceactivities) or 
+ ClaimsCount>(select avg(ClaimsCount) from insuranceactivities))
+ and Investigation="No";
+
+11) select PolicyType,sum(AnnualPremium) from insuranceactivities
+ where FeedbackScore>(select avg(FeedbackScore) from insuranceactivities) and ClaimsCount>1 
+ group by PolicyType;
+
+12)NA
