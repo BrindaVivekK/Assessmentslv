@@ -1,0 +1,59 @@
+1) select machine_id from l1_maintenance_records
+where month(maintenance_date)=3 and year(maintenance_date)=2024 and 
+cost>(select avg(cost) from l1_maintenance_records where month(maintenance_date)=3);
+
+2) select maintenance_type,count(machine_id) as max_ct from l1_maintenance_records 
+where month(maintenance_date)=3 and year(maintenance_date)=2024 group by maintenance_type 
+having(select max(ct) from (select count(*) as ct from l1_maintenance_records group by maintenance_type) as ctm);
+3) select technician_name,avg(cost) as avg_m_cost from l1_maintenance_records where
+month(maintenance_date)=3 and year(maintenance_date)=2024  
+group by technician_name order by avg_m_cost desc limit 1;
+
+4)NA
+5) 
+select l.product_id,(l.user_feedback_score) from l2_updates u 
+join l2_updates l
+where l.user_feedback_score> u.user_feedback_score and
+l.incident_count_post_update<l.incident_count_pre_update 
+order by l.user_feedback_score desc,l.incident_count_pre_update -l.incident_count_post_update limit 1;
+
+
+6)select product_id,user_feedback_score from l2_updates 
+where incident_count_post_update<incident_count_pre_update 
+order by user_feedback_score desc,incident_count_pre_update -incident_count_post_update;
+
+
+
+7)
+select p.patient_id,p.patient_name,count(f.facility_id) from l3_patients p 
+join l3_visits v on v.patient_id=p.patient_id
+join l3_facilities f on v.facility_id=f.facility_id
+where count(f.facility_id)>1 and month(v.visit_date)=3 and year(v.visit_date)=2024
+group by p.patient_id,p.patient_name;
+
+8)
+select f.facility_id,f.facility_name,count(*) as cnt_emer from l3_facilities f join
+l3_visits v on v.facility_id=f.facility_id 
+where reason_for_visit='Emergency' group by f.facility_id order by cnt_emer limit 1;
+9)
+select p.insurance_provider from l3_patients p 
+join l3_visits v on v.patient_id=p.patient_id
+join l3_treatments t on v.visit_id=t.visit_id
+where t.outcome='Complicated' and month(v.visit_date)<=4 and year(v.visit_date)=2024;
+
+10)
+select p.product_name,p.category,count(p.product_id) from l4_products p 
+join l4_sales s on s.product_id=p.product_id 
+where month(sale_date)=3 and year(sale_date)=2024 group by p.product_id;
+
+11)
+select product_name,category,
+(select count(product_id) from l4_sales group by product_id)
+from l4_products;
+
+12)
+select p.product_name,p.category from l4_products p 
+full outer join l4_sales s on s.product_id=p.product_id
+where month(sale_date)=3 and year(sale_date)=2024
+group by p.product_id,p.product_name,p.category having 
+count(sale_id)=0 ;
