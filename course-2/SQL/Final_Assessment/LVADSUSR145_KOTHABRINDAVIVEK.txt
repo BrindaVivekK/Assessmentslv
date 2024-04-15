@@ -8,7 +8,8 @@ datediff(curdate(),sales_date)<30 group by product_id;
 from sales_records where year(sales_date)=year(curdate())group by product_id
 order by sum(sales_amount) desc limit 3;
 
-3)select customer_id,sum(sales_amount) from Sales_Records group by customer_id order by sum(sales_amount);
+3)select customer_id,sum(sales_amount),(sum(sales_amount)/(select sum(sales_amount) from sales_records)*
+100) as percentage_contribution from Sales_Records group by customer_id order by sum(sales_amount) desc,percentage_contribution desc;
 
 
 4) select customer_id,case
