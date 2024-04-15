@@ -1,0 +1,89 @@
+NAME:KOTHA BRINDA VIVEK
+
+
+1)select product_id,avg(sales_amount) from Sales_Records where 
+datediff(curdate(),sales_date)<30 group by product_id;
+
+2)Select product_id,sum(sales_amount)as tot_amt,rank() over(order by sum(sales_amount) desc) 
+from sales_records where year(sales_date)=year(curdate())group by product_id
+order by sum(sales_amount) desc limit 3;
+
+3)select customer_id,sum(sales_amount) from Sales_Records group by customer_id order by sum(sales_amount);
+
+
+4) select customer_id,case
+when count(customer_id)>=4 then'Concistent Buyers'
+when count(customer_id)<4 then 'Occasional Buyers'
+ end as customer_category
+ from sales_records group by customer_id ;
+
+LAB 2:
+
+5) select distinct departure_airport,arrival_airport,avg(base_price) from flights 
+group by departure_airport,arrival_airport;
+
+6) select f.flight_id,f.flight_number,f.departure_date,count(t.ticket_id) as count_tickets
+ from flights f join tickets t using(flight_id) group by flight_id order by count(t.ticket_id) desc;
+
+7)
+select p.passenger_name,p.frequent_flyer_status,sum(t.ticket_price) from tickets t
+ join passengers p using(passenger_id) group by passenger_id order by sum(t.ticket_price) desc limit 5 ;
+
+8)
+select monthname(ticket_date) as month,count(ticket_id) as total_tickets_sold from tickets 
+ group by monthname(ticket_date) order by total_tickets_sold desc limit 1;
+
+
+LAB 3:
+
+9)NA(AVG PLAYTIME )
+
+10) select g.game_name,count(player_id) as total_no_players from PlayerScores 
+join games g using(game_id)group by game_id order by count(player_id) desc limit 3;
+
+11) select g.game_name,count(player_id) as total_no_players,avg(score),max(score) from PlayerScores 
+join games g using(game_id)group by game_id order by count(player_id) desc;
+
+12)
+select distinct s.player_id,player_name,registration_date,max(s.play_date)
+ from players  inner join playerscores s 
+group by s.player_id,player_name,registration_date
+having (datediff(curdate(),max(s.play_date))>30) order by player_id ;
+
+LAB 4:
+
+13)
+select doctor_id,d.doctor_name,sum(cost) from treatments join doctors d using(doctor_id)
+group by doctor_id order by sum(cost) desc limit 5;
+
+14)
+select treatment_name,sum(cost) as total_amt,(sum(cost)/(select sum(cost) from treatments)*100) as perct_contribution
+from treatments group by treatment_id ;
+
+15) 
+select patient_id,p.patient_name,p.admission_date,p.discharge_date from patients p 
+join patients p1 using(patient_id) where
+ p1.admission_date<>p.admission_date and datediff(p.admission_date,p1.admission_date)<30;
+
+16)select distinct gender,diagnosis,avg(datediff(discharge_date,admission_date)) as length_of_stay from patients 
+group by gender,diagnosis;
+
+LAB 5:
+17)
+select c.department,e.semester,avg(e.grade) from courses c join enrollments e 
+using(course_id) group by c.department,e.semester order by c.department,e.semester;
+
+18)
+select major,count(student_id) as no_of_students,enrollment_year from students group by major,enrollment_year
+ order by count(student_id) desc,enrollment_year;
+
+19) select s.student_id,s.student_name,e.semester,sum(c.credits) from students s 
+join enrollments e using(student_id)
+join courses c using(course_id)
+group by s.student_id,s.student_name,e.semester having sum(c.credits)>=50 ;
+
+20) select c.course_name,count(s.student_id),s.enrollment_year,row_number() 
+over(partition by c.course_name,s.enrollment_year order by count(student_id)) as indv_rank
+from enrollments e join
+students s using(Student_id)
+join courses c using(course_id) group by course_name,s.enrollment_year order by count(student_id) desc limit 3;
